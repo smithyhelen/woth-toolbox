@@ -67,6 +67,9 @@ export interface TrackedAnimal {
   star_rating: number;
   responds_to_caller: boolean;
   location_notes: string;
+  coordinate_x?: number;
+  coordinate_y?: number;
+  screenshot_url?: string;
   last_seen: string;
   culling_recommendation?: 'CULL' | 'LEAVE' | 'MONITOR' | 'TROPHY';
 }
