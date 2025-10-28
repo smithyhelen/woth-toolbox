@@ -21,30 +21,26 @@ export const useTutorial = (enable = false) => {
     onTutorialOpen,
   } = useContext(TutorialContext);
 
-  // Enable tutorial if required and disable it on unmount
   useEffect(() => {
-    if (enable) {
-      onTutorialEnable(true);
-    }
-
-    return () => onTutorialEnable(false);
+    onTutorialEnable(enable);
   }, [enable, onTutorialEnable]);
 
-  // Show tutorial if it has previously not been completed
   useEffect(() => {
-    !completed && onTutorialOpen();
-  }, [completed, onTutorialOpen]);
+    if (!enabled || completed) {
+      return;
+    }
+
+    onTutorialOpen();
+  }, [completed, enabled, onTutorialOpen]);
 
   return {
-    component: (
-      <HuntingMapTutorial
-        defaultPageIndex={defaultPageIndex}
-        key="woth:tutorial"
-        visible={visible}
-        onClose={onTutorialClose}
-        onComplete={onTutorialComplete}
-      />
-    ),
+    Tutorial: HuntingMapTutorial,
+    tutorialProps: {
+      defaultPageIndex,
+      visible,
+      onClose: onTutorialClose,
+      onComplete: onTutorialComplete,
+    },
     enabled,
     onTutorialOpen,
   };
