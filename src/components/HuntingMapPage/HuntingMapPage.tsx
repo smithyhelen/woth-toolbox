@@ -14,6 +14,7 @@ import {
   useHuntingMapType,
   useSettings,
   useTranslator,
+  useTutorial,
 } from 'hooks';
 import type { AnimalMarker } from 'types/markers';
 import type { HuntingMapPageProps } from './types';
@@ -52,6 +53,11 @@ export const HuntingMapPage = (props: HuntingMapPageProps) => {
   // Retrieve map dependencies
   const { onSettingsRead } = useSettings();
   const translate = useTranslator();
+
+  // Enable tutorial on map pages
+  const { Tutorial, tutorialProps } = useTutorial(true);
+
+  // Animal marker that is currently being edited
   
 
   // Animal marker that is currently being edited
@@ -123,9 +129,9 @@ export const HuntingMapPage = (props: HuntingMapPageProps) => {
         onCreateRecordAsync={onCreateAnimalMarkerRecord}
         onDeleteRecordAsync={onDeleteAnimalMarkerRecord}
         onUpdateRecordAsync={onUpdateAnimalMarkerRecord}
-      />
+            />
 
-      
+      {Tutorial && <Tutorial {...tutorialProps} />}
     </>
   );
 };
