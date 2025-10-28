@@ -39,7 +39,7 @@ export const useTutorialManager = (): TutorialContextValue => {
   /**
    * Handle completing tutorial
    */
-  const handleTutorialComplete = useCallback(async () =>
+  const handleTutorialComplete = useCallback(async () => {
   sendGoogleEvent('help_complete');
   if (storage) {
     await storageWriteTutorialFlagAsync(storage);
