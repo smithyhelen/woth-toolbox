@@ -46,7 +46,7 @@ export const metadataBase = baseUrl ? new URL(baseUrl) : undefined;
 export const googleAnalyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ?? '';
 
 // External URLs
-export const urlDiscord = 'https://discord.gg/wayofthehunter';
+export const urlDiscord = 'https://discord.gg/CR9vNvgMVj';
 export const urlSteam =
   'https://steamcommunity.com/sharedfiles/filedetails/?id=2882064749';
 
