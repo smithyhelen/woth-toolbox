@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { TutorialContextValue } from 'contexts';
-import { isMapTutorialCompleted, writeMapTutorialCompleted } from 'lib/storage';
+import { storageReadTutorialFlagAsync, storageWriteTutorialFlagAsync } from 'lib/storage';
 import { sendGoogleEvent } from 'lib/tracking';
 import { useStorage } from './useStorage';
 
