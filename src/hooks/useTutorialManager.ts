@@ -47,7 +47,7 @@ export const useTutorialManager = (): TutorialContextValue => {
     sendGoogleEvent('help_complete');
 
     if (storage) {
-      writeMapTutorialCompleted(storage);
+  await storageWriteTutorialFlagAsync(storage);
     }
   }, [storage]);
 
@@ -79,8 +79,8 @@ export const useTutorialManager = (): TutorialContextValue => {
       return;
     }
 
-    setCompleted(isMapTutorialCompleted(storage));
-  }, [storage]);
+    storageReadTutorialFlagAsync(storage).then(setCompleted);  // ← PUT IT HERE
+}, [storage]);
 
   return {
     completed,
