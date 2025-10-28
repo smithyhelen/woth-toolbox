@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import type { TutorialContextValue } from 'contexts';
-import { isMapTutorialCompleted, writeMapTutorialCompleted } from 'lib/storage';
+import { storageReadTutorialFlagAsync, storageWriteTutorialFlagAsync } from 'lib/storage';
 import { sendGoogleEvent } from 'lib/tracking';
 import { useStorage } from './useStorage';
 
@@ -39,17 +39,14 @@ export const useTutorialManager = (): TutorialContextValue => {
   /**
    * Handle completing tutorial
    */
-  const handleTutorialComplete = useCallback(() => {
-    setCompleted(true);
-    setVisible(false);
-
-    // Send custom Google Analytics event
-    sendGoogleEvent('help_complete');
-
-    if (storage) {
-      writeMapTutorialCompleted(storage);
-    }
-  }, [storage]);
+  const handleTutorialComplete = useCallback(async () => {
+  sendGoogleEvent('help_complete');
+  if (storage) {
+    await storageWriteTutorialFlagAsync(storage);
+  }
+  setCompleted(true);
+  setVisible(false);
+}, [storage]);
 
   /**
    * Handle showing tutorial
@@ -79,8 +76,8 @@ export const useTutorialManager = (): TutorialContextValue => {
       return;
     }
 
-    setCompleted(isMapTutorialCompleted(storage));
-  }, [storage]);
+    storageReadTutorialFlagAsync(storage).then(setCompleted);  // ← PUT IT HERE
+}, [storage]);
 
   return {
     completed,
