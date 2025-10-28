@@ -44,8 +44,9 @@ export const useTutorialManager = (): TutorialContextValue => {
   if (storage) {
     await storageWriteTutorialFlagAsync(storage);
   }
-  ...
-  }, [storage]);
+  setCompleted(true);
+  setVisible(false);
+}, [storage]);
 
   /**
    * Handle showing tutorial
