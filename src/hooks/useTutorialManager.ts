@@ -39,16 +39,12 @@ export const useTutorialManager = (): TutorialContextValue => {
   /**
    * Handle completing tutorial
    */
-  const handleTutorialComplete = useCallback(() => {
-    setCompleted(true);
-    setVisible(false);
-
-    // Send custom Google Analytics event
-    sendGoogleEvent('help_complete');
-
-    if (storage) {
-  await storageWriteTutorialFlagAsync(storage);
-    }
+  const handleTutorialComplete = useCallback(async () => {  // ← ADD async HERE
+  sendGoogleEvent('help_complete');
+  if (storage) {
+    await storageWriteTutorialFlagAsync(storage);
+  }
+  ...
   }, [storage]);
 
   /**
