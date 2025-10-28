@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-    fetchUserHerds,
-    fetchHerdAnimals,
-    calculateCullingRecommendation,
-    type HerdsResponse,
-    type TrackedAnimal,
-    type Herd
+import { 
+  fetchUserHerds, 
+  fetchHerdAnimals, 
+  calculateCullingRecommendation,
+  type HerdsResponse,
+  type TrackedAnimal,
+  type Herd
 } from '../services/discordApiService';
+
 interface HerdMapOverlayProps {
   currentMap?: string;
   onHerdsLoaded?: (herds: Herd[]) => void;
@@ -264,27 +265,47 @@ export function HerdMapOverlay({ currentMap, onHerdsLoaded }: HerdMapOverlayProp
         pointerEvents: 'none',
         zIndex: 999
       }}>
-        {filteredAnimals.map((animal, index) => (
-          <div
-            key={`${animal.id}-${index}`}
-            className="animal-marker"
-            data-recommendation={animal.culling_recommendation}
-            data-species={animal.species_name}
-            data-location={animal.location_notes}
-            data-stars={animal.star_rating}
-            data-age={animal.age_class}
-            style={{
-              position: 'absolute',
-              fontSize: '24px',
-              pointerEvents: 'all',
-              cursor: 'pointer',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))'
-            }}
-            title={`${animal.species_name} - ${'⭐'.repeat(animal.star_rating)} ${animal.age_class}\n${animal.location_notes}\nRecommendation: ${animal.culling_recommendation}`}
-          >
-            {MARKER_ICONS[animal.culling_recommendation || 'MONITOR']}
-          </div>
-        ))}
+        {filteredAnimals.map((animal, index) => {
+          const hasCoordinates = animal.coordinate_x != null && animal.coordinate_y != null;
+          const markerStyle: React.CSSProperties = {
+            position: 'absolute',
+            fontSize: '24px',
+            pointerEvents: 'all',
+            cursor: 'pointer',
+            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.8))',
+            transform: 'translate(-50%, -50%)'
+          };
+          
+          if (hasCoordinates) {
+            markerStyle.left = `${animal.coordinate_x}px`;
+            markerStyle.top = `${animal.coordinate_y}px`;
+          }
+          
+          const tooltipText = [
+            `${animal.species_name} - ${'⭐'.repeat(animal.star_rating)} ${animal.age_class}`,
+            hasCoordinates ? `Coordinates: X:${animal.coordinate_x}, Y:${animal.coordinate_y}` : '',
+            animal.location_notes || '',
+            `Recommendation: ${animal.culling_recommendation}`
+          ].filter(Boolean).join('\n');
+          
+          return (
+            <div
+              key={`${animal.id}-${index}`}
+              className="animal-marker"
+              data-recommendation={animal.culling_recommendation}
+              data-species={animal.species_name}
+              data-location={animal.location_notes}
+              data-coordinates={hasCoordinates ? `${animal.coordinate_x},${animal.coordinate_y}` : ''}
+              data-screenshot={animal.screenshot_url || ''}
+              data-stars={animal.star_rating}
+              data-age={animal.age_class}
+              style={markerStyle}
+              title={tooltipText}
+            >
+              {MARKER_ICONS[animal.culling_recommendation || 'MONITOR']}
+            </div>
+          );
+        })}
       </div>
     </>
   );
