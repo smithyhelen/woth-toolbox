@@ -49,7 +49,7 @@ function DiscordAuthContent() {
   const loadUserHerds = async () => {
   try {
     const response = await fetchUserHerds();
-    const animals = response?.herds || response?.habitats?.flatMap(h => h.animals) || [];
+    const animals = response?.herds || [];
     setHerds(animals);  // ✅ Correct - extract the array from the response
   } catch (error) {
     console.error('Error loading herds:', error);
