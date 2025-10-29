@@ -1,5 +1,11 @@
 const API_BASE_URL = 'http://65.109.100.181:8080';
 
+export function isUserLoggedIn(): boolean {
+  if (typeof window === 'undefined') return false;
+  const token = localStorage.getItem('discord_token');
+  return !!token;
+}
+
 export async function exchangeCodeForToken(code: string) {
   try {
     const response = await fetch(`${API_BASE_URL}/api/auth/callback?code=${code}`);
