@@ -40,3 +40,16 @@ export async function fetchUserHerds() {
     throw error;
   }
 }
+
+export async function fetchHerdAnimals(herdId: string) {
+  try {
+    const token = localStorage.getItem('discord_token');
+    const response = await fetch(`${API_BASE_URL}/api/herds/${herdId}/animals`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching herd animals:', error);
+    throw error;
+  }
+}
