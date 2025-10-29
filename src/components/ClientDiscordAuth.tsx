@@ -57,8 +57,8 @@ function DiscordAuthContent() {
 };
 
   const handleLogin = () => {
-    const clientId = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
-    const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/`;
+    const clientId = "1413883308298997790";
+    const redirectUri = "https://smithyhelen.github.io/woth-toolbox/";
     const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify`;
     window.location.href = discordAuthUrl;
   };
