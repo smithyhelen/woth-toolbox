@@ -98,7 +98,7 @@ export function HerdMapOverlay({ currentMap, onHerdsLoaded }: HerdMapOverlayProp
       
       try {
         const { animals: herdAnimals } = await fetchHerdAnimals(herdId);
-        const enriched = herdAnimals.map(a => ({
+        const enriched = herdAnimals.map((a: any) => ({
           ...a,
           culling_recommendation: calculateCullingRecommendation(
             a.age_class,
