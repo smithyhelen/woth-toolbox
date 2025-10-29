@@ -114,28 +114,39 @@ export async function fetchSpecies(): Promise<Species[]> {
   }
 
   return await response.json();
-}
+const API_BASE_URL = 'http://65.109.100.181:8080';
 
-export function calculateCullingRecommendation(
-  ageClass: string,
-  starRating: number,
-  respondsToCaller: boolean
-): 'CULL' | 'LEAVE' | 'MONITOR' | 'TROPHY' {
-  if (ageClass === 'Young') {
-    if (starRating === 1 && respondsToCaller) return 'CULL';
-    return 'LEAVE';
-  } else if (ageClass === 'Adult') {
-    if (starRating <= 2) return 'MONITOR';
-    if (starRating === 5) return 'TROPHY';
-    return 'LEAVE';
-  } else if (ageClass === 'Mature') {
-    if (starRating <= 2) return 'CULL';
-    if (starRating === 3) return 'MONITOR';
-    return 'TROPHY';
+export async function exchangeCodeForToken(code: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/auth/callback?code=${code}`);
+    return await response.json();
+  } catch (error) {
+    console.error('Error exchanging code for token:', error);
+    throw error;
   }
-  return 'MONITOR';
 }
 
-export function isUserLoggedIn(): boolean {
-  return !!localStorage.getItem('jwt_token');
+export async function fetchUserData(accessToken: string) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/user`, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+}
+
+export async function fetchUserHerds() {
+  try {
+    const token = localStorage.getItem('discord_token');
+    const response = await fetch(`${API_BASE_URL}/api/herds`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching herds:', error);
+    throw error;
+  }
 }
