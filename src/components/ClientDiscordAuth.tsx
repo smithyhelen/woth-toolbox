@@ -1,23 +1,28 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { exchangeCodeForToken, fetchUserData, fetchUserHerds } from '@/services/discordApiService';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { fetchUserData, fetchUserHerds } from '@/services/discordApiService';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://65.109.100.181:8080';
 
 function DiscordAuthContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [herds, setHerds] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const code = searchParams.get('code');
-    if (code && !user) {
-      handleDiscordCallback(code);
+    const token = searchParams.get('token');
+    if (token && !user) {
+      handleJWTToken(token);
+      const newUrl = window.location.pathname;
+      router.replace(newUrl);
     }
 
     if (typeof window !== 'undefined') {
-      const storedToken = localStorage.getItem('discord_token');
+      const storedToken = localStorage.getItem('jwt_token');
       const storedUser = localStorage.getItem('discord_user');
       if (storedToken && storedUser && !user) {
         setUser(JSON.parse(storedUser));
@@ -26,45 +31,40 @@ function DiscordAuthContent() {
     }
   }, [searchParams]);
 
-  const handleDiscordCallback = async (code: string) => {
+  const handleJWTToken = async (token: string) => {
     setLoading(true);
     try {
-      const tokenData = await exchangeCodeForToken(code);
-      if (tokenData && tokenData.access_token) {
-        const userData = await fetchUserData(tokenData.access_token);
-        if (userData) {
-          localStorage.setItem('discord_token', tokenData.access_token);
-          localStorage.setItem('discord_user', JSON.stringify(userData));
-          setUser(userData);
-          await loadUserHerds();
-        }
+      localStorage.setItem('jwt_token', token);
+      const userData = await fetchUserData();
+      if (userData) {
+        localStorage.setItem('discord_user', JSON.stringify(userData));
+        setUser(userData);
+        await loadUserHerds();
       }
     } catch (error) {
-      console.error('Discord auth error:', error);
+      console.error('Auth error:', error);
+      localStorage.removeItem('jwt_token');
     } finally {
       setLoading(false);
     }
   };
 
   const loadUserHerds = async () => {
-  try {
-    const response = await fetchUserHerds();
-    const animals = response?.herds || [];
-    setHerds(animals);  // ✅ Correct - extract the array from the response
-  } catch (error) {
-    console.error('Error loading herds:', error);
-  }
-};
+    try {
+      const response = await fetchUserHerds();
+      const animals = response?.herds || response?.habitats?.flatMap((h: any) => h.animals) || [];
+      setHerds(animals);
+    } catch (error) {
+      console.error('Error loading herds:', error);
+    }
+  };
 
   const handleLogin = () => {
-    const clientId = "1413883308298997790";
-    const redirectUri = "https://smithyhelen.github.io/woth-toolbox/";
-    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify`;
-    window.location.href = discordAuthUrl;
+    window.location.href = `${API_BASE_URL}/api/auth/login`;
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('discord_token');
+    localStorage.removeItem('jwt_token');
     localStorage.removeItem('discord_user');
     setUser(null);
     setHerds([]);
