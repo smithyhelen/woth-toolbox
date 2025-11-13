@@ -6,6 +6,7 @@ import { createPortal } from 'react-dom';
 import { AnimalEditor } from 'components/AnimalEditor';
 import type { HuntingMapProps } from 'components/HuntingMap';
 import { HuntingMap } from 'components/HuntingMap';
+import { HerdMapOverlay } from 'components/HerdMapOverlay';
 import { basePath } from 'config/app';
 import { markerVisibilityMap } from 'config/markers';
 import {
@@ -58,9 +59,6 @@ export const HuntingMapPage = (props: HuntingMapPageProps) => {
   const { Tutorial, tutorialProps } = useTutorial(true);
 
   // Animal marker that is currently being edited
-  
-
-  // Animal marker that is currently being edited
   const [pendingMarker, setPendingMarker] = useState<AnimalMarker>();
 
   // Find animal marker record for the currently edited marker
@@ -104,23 +102,31 @@ export const HuntingMapPage = (props: HuntingMapPageProps) => {
 
   return (
   <>
-      <HuntingMap
-        {...settings}
-        animalMarkers={animalMarkers}
-        animalRecordMap={animalRecordMap}
-        customMarkers={customMarkers}
-        editedAnimal={pendingMarker}
-        genericMarkers={genericMarkers}
-        imageHeight={mapHeight}
-        imageSrc={basePath + mapImageSrc}
-        imageWidth={mapWidth}
-        labels={mapLabels}
-        zoomMarkerMap={markerVisibilityMap}
-        onClearTrackingMarkers={onClearTrackingMarkersAsync}
-        onCreateCustomMarker={onCreateCustomMarkerAsync}
-        onDeleteCustomMarker={onDeleteCustomMarkerAsync}
-        onEditAnimalMarker={setPendingMarker}
-      />
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        <HuntingMap
+          {...settings}
+          animalMarkers={animalMarkers}
+          animalRecordMap={animalRecordMap}
+          customMarkers={customMarkers}
+          editedAnimal={pendingMarker}
+          genericMarkers={genericMarkers}
+          imageHeight={mapHeight}
+          imageSrc={basePath + mapImageSrc}
+          imageWidth={mapWidth}
+          labels={mapLabels}
+          zoomMarkerMap={markerVisibilityMap}
+          onClearTrackingMarkers={onClearTrackingMarkersAsync}
+          onCreateCustomMarker={onCreateCustomMarkerAsync}
+          onDeleteCustomMarker={onDeleteCustomMarkerAsync}
+          onEditAnimalMarker={setPendingMarker}
+        />
+        
+        <HerdMapOverlay 
+          currentMap={mapId}
+          mapWidth={mapWidth}
+          mapHeight={mapHeight}
+        />
+      </div>
 
       <AnimalEditor
         marker={pendingMarker}
@@ -129,7 +135,7 @@ export const HuntingMapPage = (props: HuntingMapPageProps) => {
         onCreateRecordAsync={onCreateAnimalMarkerRecord}
         onDeleteRecordAsync={onDeleteAnimalMarkerRecord}
         onUpdateRecordAsync={onUpdateAnimalMarkerRecord}
-            />
+      />
 
       {Tutorial && <Tutorial {...tutorialProps} />}
     </>
