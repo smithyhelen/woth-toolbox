@@ -6,7 +6,6 @@ import { createPortal } from 'react-dom';
 import { AnimalEditor } from 'components/AnimalEditor';
 import type { HuntingMapProps } from 'components/HuntingMap';
 import { HuntingMap } from 'components/HuntingMap';
-import { HerdMapOverlay } from 'components/HerdMapOverlay';
 import { basePath } from 'config/app';
 import { markerVisibilityMap } from 'config/markers';
 import {
@@ -102,31 +101,23 @@ export const HuntingMapPage = (props: HuntingMapPageProps) => {
 
   return (
   <>
-      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-        <HuntingMap
-          {...settings}
-          animalMarkers={animalMarkers}
-          animalRecordMap={animalRecordMap}
-          customMarkers={customMarkers}
-          editedAnimal={pendingMarker}
-          genericMarkers={genericMarkers}
-          imageHeight={mapHeight}
-          imageSrc={basePath + mapImageSrc}
-          imageWidth={mapWidth}
-          labels={mapLabels}
-          zoomMarkerMap={markerVisibilityMap}
-          onClearTrackingMarkers={onClearTrackingMarkersAsync}
-          onCreateCustomMarker={onCreateCustomMarkerAsync}
-          onDeleteCustomMarker={onDeleteCustomMarkerAsync}
-          onEditAnimalMarker={setPendingMarker}
-        />
-        
-        <HerdMapOverlay 
-          currentMap={mapId}
-          mapWidth={mapWidth}
-          mapHeight={mapHeight}
-        />
-      </div>
+      <HuntingMap
+        {...settings}
+        animalMarkers={animalMarkers}
+        animalRecordMap={animalRecordMap}
+        customMarkers={customMarkers}
+        editedAnimal={pendingMarker}
+        genericMarkers={genericMarkers}
+        imageHeight={mapHeight}
+        imageSrc={basePath + mapImageSrc}
+        imageWidth={mapWidth}
+        labels={mapLabels}
+        zoomMarkerMap={markerVisibilityMap}
+        onClearTrackingMarkers={onClearTrackingMarkersAsync}
+        onCreateCustomMarker={onCreateCustomMarkerAsync}
+        onDeleteCustomMarker={onDeleteCustomMarkerAsync}
+        onEditAnimalMarker={setPendingMarker}
+      />
 
       <AnimalEditor
         marker={pendingMarker}
